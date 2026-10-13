@@ -1,0 +1,7 @@
+project_id = "cinemora"
+
+[functions.create-upload]
+verify_jwt = true
+
+[functions.signed-media]
+verify_jwt = false
