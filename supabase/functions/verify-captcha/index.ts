@@ -1,4 +1,3 @@
-import { corsHeaders } from "../_shared/cors.ts";
 const cors={ "Access-Control-Allow-Origin": Deno.env.get("SITE_ORIGIN") ?? "", "Access-Control-Allow-Headers":"authorization, x-client-info, apikey, content-type", "Access-Control-Allow-Methods":"POST, OPTIONS", "Vary":"Origin" };
 Deno.serve(async (req)=>{
  if(req.method==="OPTIONS") return new Response("ok",{headers:cors});
