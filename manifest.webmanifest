@@ -1,0 +1,10 @@
+{
+  "name": "Cinemora — Your Screen, Your Stories",
+  "short_name": "Cinemora",
+  "description": "Browse films, series and independent video.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#09090f",
+  "theme_color": "#09090f",
+  "icons": []
+}
