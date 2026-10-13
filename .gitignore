@@ -1,0 +1,9 @@
+node_modules
+
+# Local Supabase frontend configuration; never commit project secrets
+supabase-config.js
+.env
+.env.*
+!.env.example
+.supabase/
+.DS_Store
