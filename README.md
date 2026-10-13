@@ -26,3 +26,7 @@ This repository contains the website code, not movie files. Only upload and dist
 
 ## Hosting and scaling
 Use dedicated object/video storage and a CDN for media. GitHub is for source code, not movie hosting. Large-scale streaming needs transcoding (HLS/DASH), egress capacity, CDN/WAF/rate limits, monitoring, backups, and budget alerts. A CAPTCHA is an abuse-reduction layer, not a substitute for authorization or rate limiting. Public pages should remain crawlable; request indexing after deploying your domain.
+
+
+## Video file-size note
+The default bucket and upload function are capped at 50 MiB to fit the common Supabase free-tier upload limit. Full-length movie files generally exceed this. Before hosting larger files, verify the selected Supabase plan's current upload/storage/egress limits or choose a dedicated video host/CDN; then change the bucket and server-side limit together. Do not assume a 2 GB client-side limit means the provider accepts 2 GB uploads.

@@ -27,3 +27,7 @@ GitHub stores source code, not movie files. Do not commit video files. For real 
 
 ## Content rights
 Only upload/distribute films and videos you own or are licensed to distribute. Provide a contact and takedown process before public launch.
+
+
+## Upload size limit
+This starter is capped at 50 MiB in both the private bucket and upload Edge Function to avoid advertising unsupported large uploads on the default free-tier setup. Full movies commonly exceed this. Confirm your current provider limits and use a suitable paid plan or dedicated video/object storage/CDN before increasing the limit; update both the bucket and server-side function together.

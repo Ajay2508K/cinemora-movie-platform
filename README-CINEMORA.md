@@ -18,3 +18,7 @@ Never commit `supabase-config.js`, service-role credentials, Turnstile secret ke
 
 ## CAPTCHA configuration
 Set `TURNSTILE_SECRET_KEY` and a strong random `CAPTCHA_SESSION_SECRET` in Supabase Edge Function secrets. The secret keys must never be committed to GitHub. The browser only receives the Turnstile site key and Supabase publishable/anon key. Playback requests require a signed, short-lived human-verification session.
+
+
+## Video size
+The default storage bucket and server upload endpoint are configured for 50 MiB, not feature-length movie files. Larger media requires confirming provider plan limits and configuring an appropriate object/video storage service and CDN.

@@ -12,7 +12,7 @@ Deno.serve(async req=>{
  const admin=createClient(url,service,{auth:{persistSession:false}});
  const {data:profile}=await admin.from("user_profiles").select("role").eq("user_id",user.id).maybeSingle();if(profile?.role!=="admin")return json({error:"Admin permission required"},403);
  let b:{fileName?:string;contentType?:string;size?:number};try{b=await req.json()}catch{return json({error:"Invalid JSON"},400)}
- const types=new Set(["video/mp4","video/webm","video/quicktime","application/vnd.apple.mpegurl","video/mp2t","image/jpeg","image/png","image/webp"]),max=Number(Deno.env.get("MAX_UPLOAD_BYTES")??2147483648);
+ const types=new Set(["video/mp4","video/webm","video/quicktime","application/vnd.apple.mpegurl","video/mp2t","image/jpeg","image/png","image/webp"]),max=Number(Deno.env.get("MAX_UPLOAD_BYTES")??52428800);
  if(!Number.isSafeInteger(b.size)||b.size!<1||b.size!>max)return json({error:"File size exceeds configured limit"},413);
  if(!b.contentType||!types.has(b.contentType))return json({error:"Unsupported media type"},415);
  const name=(b.fileName??"media").normalize("NFKC").replace(/[^a-zA-Z0-9._-]/g,"_").slice(-100),path=user.id+"/"+crypto.randomUUID()+"-"+name;
