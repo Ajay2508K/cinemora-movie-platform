@@ -27,3 +27,12 @@ Do not declare production readiness until these checks pass against a staging pr
 - Disable public signup unless required.
 - Enable secret scanning; ensure service-role keys never enter source or browser bundles.
 - Prepare a rights/takedown and abuse-report process.
+
+
+## Human verification and playback
+- Valid Turnstile challenge produces a short-lived signed human-verification session.
+- Missing, invalid, expired, or tampered human session token is rejected by the signed-media Edge Function.
+- A valid human session can obtain a short-lived playback URL only for a published title.
+- Turnstile fails closed if its site/secret keys or the session-signing secret are missing.
+- Confirm the public landing page remains crawlable and the admin page is marked noindex.
+- CAPTCHA is not a replacement for rate limiting, WAF rules, or storage/API quotas.
