@@ -39,7 +39,7 @@
 (function(){
  const cfg=window.CINEMORA_CONFIG||{},gate=document.getElementById('captchaGate'),status=document.getElementById('captchaStatus');
  const until=Number(sessionStorage.getItem('cinemora-human-until')||0);
- if(until>Date.now()){gate.style.display='none';return;}
+ if(until>Date.now()&&sessionStorage.getItem('cinemora-human-token')){gate.style.display='none';return;}
  function say(s){status.textContent=s;}
  window.cinemoraTurnstileLoaded=function(){
    if(!cfg.TURNSTILE_SITE_KEY||cfg.TURNSTILE_SITE_KEY.includes('YOUR-')){say('Site setup is not finished. The administrator must configure the Turnstile site key.');return;}
@@ -52,7 +52,8 @@
          const response=await fetch(cfg.SUPABASE_URL+'/functions/v1/verify-captcha',{method:'POST',headers:{'Content-Type':'application/json','apikey':cfg.SUPABASE_ANON_KEY,'Authorization':'Bearer '+cfg.SUPABASE_ANON_KEY},body:JSON.stringify({token})});
          const data=await response.json();
          if(!response.ok||!data.success)throw new Error(data.error||'Verification failed. Please try again.');
-         sessionStorage.setItem('cinemora-human-until',String(Date.now()+30*60*1000));
+         sessionStorage.setItem('cinemora-human-until',String(data.expiresAt||Date.now()+30*60*1000));
+         sessionStorage.setItem('cinemora-human-token',data.sessionToken||'');
          gate.style.display='none';
        }catch(e){say(e.message||'Verification failed. Please refresh and try again.');if(window.turnstile)window.turnstile.reset();}
      },

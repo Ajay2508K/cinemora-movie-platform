@@ -19,7 +19,7 @@ This repository contains the website code, not movie files. Only upload and dist
 2. Create an administrator account in Supabase Auth, then run the admin bootstrap SQL at the bottom of `supabase/schema.sql` using your account email.
 3. Copy `supabase-config.js.example` to `supabase-config.js`; fill in the Supabase project URL, browser publishable/anon key, and Cloudflare Turnstile **site key**. Never put a service-role key or Turnstile secret in this file.
 4. Deploy all three Edge Functions: `create-upload`, `signed-media`, and `verify-captcha`.
-5. Configure Edge Function secrets: `SITE_ORIGIN` (exact deployed HTTPS origin), `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY` (only where needed by the existing upload/playback functions), and `TURNSTILE_SECRET_KEY`. Keep all secrets in Supabase, not GitHub.
+5. Configure Edge Function secrets: `SITE_ORIGIN` (exact deployed HTTPS origin), `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY` (only where needed by the existing upload/playback functions), and `TURNSTILE_SECRET_KEY`, plus a long random `CAPTCHA_SESSION_SECRET` (at least 32 random bytes). Keep all secrets in Supabase, not GitHub. The CAPTCHA function issues a signed, short-lived human-verification session, and playback checks it server-side.
 6. Add the production hostname in Cloudflare Turnstile and use its site key in the frontend config.
 7. Host the static frontend on Cloudflare Pages or another HTTPS static host. Keep `supabase-config.js` untracked; `.gitignore` already excludes it.
 8. Test admin access, RLS, CAPTCHA failure/success, private-media access, upload limits, expired signed links, and load before sharing publicly.
