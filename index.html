@@ -38,33 +38,28 @@ body{background:#07070b;color:#f5f5f7}.shell{width:min(1440px,calc(100% - 64px))
 .movie-card .movie-poster img{transition:transform .35s}
 .movie-card:hover .movie-poster img{transform:scale(1.045)}
 @media(max-width:720px){.movie-hero:after{width:90vw;height:65%;right:-20%;top:14%;opacity:.55}.movie-hero:before{background:linear-gradient(90deg,#07070bf7 0%,#07070bdc 62%,#07070b77 100%),linear-gradient(0deg,#07070bf7 0%,transparent 70%)}}
+
+/* Fixed-feeling global navigation: remains visible while browsing */
+header.top.shell{position:sticky;top:0;z-index:1000;width:100%;max-width:none;margin:0;padding:0 max(32px,calc((100vw - 1440px)/2));height:76px;background:rgba(7,7,11,.94);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-bottom:1px solid #ffffff1c}
+body{overflow-x:hidden}
+@media(max-width:720px){header.top.shell{padding:10px 14px;gap:12px;min-height:66px;height:auto}}
+/* Homepage prioritises discovery shelves over repeated category tiles */
+#collections,.membership-callout,.promise{display:none!important}
+#movieShelves{margin-top:28px}
+.movie-shelves .section-head>div>p{display:none}
 </style>
 </head>
 <body>
 <header class="top shell">
 <a class="brand" href="/" aria-label="Cinemora home">CINE<span>MORA</span></a>
-<nav aria-label="Main navigation"><a href="/catalog">Discover</a><a href="/catalog?category=Bollywood">Bollywood</a><a href="/catalog?category=Hollywood">Hollywood</a><a href="/catalog?category=Web%20Series">Series</a><a class="plus-nav" href="/plus/" aria-label="Cinemora Plus, subscriber-only private collection">✦ Cinemora Plus</a></nav>
+<nav aria-label="Main navigation"><a href="/catalog">Discover</a><a href="/catalog?category=Bollywood">Bollywood</a><a href="/catalog?category=Hollywood">Hollywood</a><a href="/catalog?category=Web%20Series">Series</a><a href="/catalog?category=South%20Indian">South Indian</a><a href="/catalog?category=Short%20Film">Short Films</a><a class="plus-nav" href="/plus/" aria-label="Cinemora Plus, subscriber-only private collection">✦ Cinemora Plus</a></nav>
 <a class="nav-cta" href="/catalog">Explore library <span aria-hidden="true">↗</span></a>
 </header>
 <main class="shell">
 <section class="hero movie-hero" id="movieHero" aria-label="Featured movies"><div class="hero-copy" id="heroCopy"><div class="eyebrow">Cinemora spotlight</div><h1>Stories worth <em>staying in</em> for.</h1><p>Loading featured stories…</p><div class="actions"><a class="button" href="/catalog">▶ Browse library</a></div></div><div class="hero-controls"><button type="button" id="heroPrev" aria-label="Previous featured movie">‹</button><div id="heroDots" aria-label="Choose featured movie"></div><button type="button" id="heroNext" aria-label="Next featured movie">›</button></div></section>
 <section class="movie-shelves" id="movieShelves" aria-live="polite"><div class="section-head"><div><h2>Made for movie nights</h2><p>Discover by language, genre and mood.</p></div><a class="arrow-link" href="/catalog">View all →</a></div><div class="shelf-track"><p class="shelf-loading">Loading movie posters…</p></div></section>
 <div class="home-player-modal" id="homePlayerModal" role="dialog" aria-modal="true" aria-label="Movie player"><div class="home-player-dialog"><button type="button" id="homePlayerClose" class="home-player-close" aria-label="Close player">×</button><h2 id="homePlayerTitle">Now playing</h2><div id="homePlayerFrame"></div><p id="homePlayerNote">Video playback is provided by the linked video host.</p></div></div>
-<section id="collections" aria-labelledby="collections-title"><div class="section-head"><div><h2 id="collections-title">Pick your kind of story</h2><p>Start with a collection. Your next favorite is waiting.</p></div><a class="arrow-link" href="/catalog">See everything <span aria-hidden="true">→</span></a></div>
-<div class="collections">
-<a class="collection" href="/catalog?category=Bollywood"><span>Bollywood<small>Colorful worlds & big feelings</small></span></a>
-<a class="collection" href="/catalog?category=Hollywood"><span>Hollywood<small>Blockbusters & bold ideas</small></span></a>
-<a class="collection" href="/catalog?category=Web%20Series"><span>Web Series<small>One more episode</small></span></a>
-<a class="collection" href="/catalog?category=South%20Indian"><span>South Indian<small>Stories across languages</small></span></a>
-<a class="collection" href="/catalog?category=Documentary"><span>Documentary<small>Real lives, new perspectives</small></span></a>
-</div></section>
-<section class="membership-callout" aria-labelledby="plus-heading"><div class="membership-copy"><div class="eyebrow">Cinemora Plus · The members’ screen</div><h2 id="plus-heading">A private collection for your next great story.</h2><p>Plus titles are reserved for active subscribers. Secure membership and playback checks are being prepared before the private library opens.</p><a class="button" href="/plus/">Explore Cinemora Plus <span aria-hidden="true">→</span></a></div><div class="membership-side"><strong>Subscriber-only stories</strong><span>Private titles will only appear after an active membership is verified.</span><div class="member-chip"><i class="member-dot" aria-hidden="true"></i> PRIVATE · SUBSCRIBER ACCESS</div></div></section>
-<section class="promise" aria-label="The Cinemora experience">
-<div class="promise-lead"><h2>Less scrolling.<br>More story.</h2><p>Browse a growing library with clear details, useful filters and a player built for the big screen or the small one in your hand.</p></div>
-<article class="promise-card"><div class="icon" aria-hidden="true">⌕</div><h3>Find it your way</h3><p>Search by title, language or genre, then narrow the view to a collection.</p></article>
-<article class="promise-card"><div class="icon" aria-hidden="true">◉</div><h3>Made for your screen</h3><p>A calm, responsive layout that feels at home on phones, tablets and desktops.</p></article>
-<article class="promise-card"><div class="icon" aria-hidden="true">▶</div><h3>Private playback</h3><p>Published titles use short-lived viewing links for secure playback.</p></article>
-</section>
+
 <div class="notice">Cinemora is for films and videos that are owned or licensed for distribution. Media files are not hosted in this source repository.</div>
 </main>
 <footer class="footer"><div class="shell footer-inner"><span>© <span id="year"></span> Cinemora</span><span>Your next story starts here · Discover films by language, genre and release year.</span></div></footer>
@@ -105,7 +100,7 @@ function renderShelves(titles){const host=document.getElementById("movieShelves"
 ["Documentaries",m=>/documentary/i.test(m.category||"")],
 ["Other titles",m=>!/(bollywood|hollywood|south|documentary)/i.test(m.category||"")&&!/series|short film/i.test(m.category||"")]
 ];
-const blocks=[];for(const lang of ["Hindi","English"]){const langItems=titles.filter(m=>String(m.language||"").toLowerCase().includes(lang.toLowerCase()));if(langItems.length)blocks.push('<section class="shelf"><div class="section-head"><div><h2>'+lang+' language</h2><p>'+langItems.length+' titles</p></div><a class="arrow-link" href="/catalog?language='+encodeURIComponent(lang)+'">View all →</a></div><div class="shelf-track">'+langItems.map(card).join("")+'</div></section>')}
+const blocks=[];const newest=titles.filter(m=>Number(m.release_year)>=2025).slice(0,12);if(newest.length)blocks.push('<section class="shelf"><div class="section-head"><div><h2>New &amp; Notable</h2></div><a class="arrow-link" href="/catalog">View all →</a></div><div class="shelf-track">'+newest.map(card).join("")+'</div></section>')
 for(const [name,test] of cats){const items=titles.filter(test);if(items.length)blocks.push('<section class="shelf"><div class="section-head"><div><h2>'+esc(name)+'</h2><p>'+items.length+' '+(items.length===1?"title":"titles")+'</p></div><a class="arrow-link" href="/catalog?category='+encodeURIComponent(name==="Short Films"?"Short Film":name)+'">View all →</a></div><div class="shelf-track">'+items.map(card).join("")+'</div></section>')}
 host.innerHTML=blocks.join("");host.querySelectorAll("[data-movie]").forEach(b=>b.addEventListener("click",()=>{const m=titles.find(x=>x.id===b.dataset.movie);if(m)playMovie(m)}))}
 async function loadHome(){try{if(!cfg.SUPABASE_URL||!cfg.SUPABASE_ANON_KEY)return;const db=createClient(cfg.SUPABASE_URL,cfg.SUPABASE_ANON_KEY,{auth:{persistSession:false}});const{data,error}=await db.from("movies").select("id,title,category,release_year,language,genre,description,poster_url,created_at,video_source_url,video_source_type").eq("published",true).order("release_year",{ascending:false}).limit(300);if(error)throw error;const titles=(data||[]).filter(m=>{const c=String(m.category||"").toLowerCase(),y=Number(m.release_year)||0;return c.includes("series")?y>=2010:(y>=1995||y===0)});featured=titles.filter(m=>Number(m.release_year)>=2025&&m.poster_url&&m.video_source_url).slice(0,4);renderHero();resetRotate();renderShelves(titles)}catch(e){console.warn("Cinemora homepage catalogue could not load",e)}}
