@@ -133,13 +133,13 @@ Deno.serve(async (req) => {
       if (!videoId || !/^[A-Za-z0-9_-]{6,20}$/.test(videoId)) return json({ error: "Invalid authorized video source" }, 422);
       playbackUrl = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(videoId)}`;
     } else if (movie.video_source_type === "google_drive") {
-      const match = raw.match(/\\/d\\/([^/?#]+)/);
+      const match = raw.split("/d/")[1]?.split(/[/?#]/)[0];
       if (!match || !["drive.google.com", "docs.google.com"].includes(new URL(raw).hostname)) return json({ error: "Invalid authorized video source" }, 422);
       playbackUrl = `https://drive.google.com/file/d/${encodeURIComponent(match[1])}/preview`;
     } else if (movie.video_source_type === "direct") {
       let parsed: URL;
       try { parsed = new URL(raw); } catch { return json({ error: "Invalid authorized video source" }, 422); }
-      if (parsed.protocol !== "https:" || !/\\.(mp4|webm|m3u8)$/i.test(parsed.pathname)) return json({ error: "Invalid authorized video source" }, 422);
+      if (parsed.protocol !== "https:" || ![".mp4", ".webm", ".m3u8"].some((ext) => parsed.pathname.toLowerCase().endsWith(ext))) return json({ error: "Invalid authorized video source" }, 422);
       playbackUrl = raw;
     } else {
       return json({ error: "Unsupported playback source" }, 422);
