@@ -30,12 +30,12 @@ revoke all on public.series_seasons, public.series_episodes from anon, authentic
 grant select on public.series_seasons, public.series_episodes to anon, authenticated;
 grant insert, update, delete on public.series_seasons, public.series_episodes to authenticated;
 create policy "View seasons of published series" on public.series_seasons for select to anon, authenticated
-using (exists (select 1 from public.movies m where m.id=series_id and m.published and m.category='Web Series'));
+using (exists (select 1 from public.movies m where m.id=series_id and m.published and m.category='Web Series' and (m.access_tier='free' or exists (select 1 from public.subscriptions sub where sub.user_id=(select auth.uid()) and sub.status='active' and sub.current_period_end>now()))));
 create policy "Admins manage seasons" on public.series_seasons for all to authenticated
 using (exists (select 1 from public.user_profiles p where p.user_id=(select auth.uid()) and p.role='admin'))
 with check (exists (select 1 from public.user_profiles p where p.user_id=(select auth.uid()) and p.role='admin'));
 create policy "View published episodes of published series" on public.series_episodes for select to anon, authenticated
-using (published and exists (select 1 from public.series_seasons s join public.movies m on m.id=s.series_id where s.id=season_id and m.published and m.category='Web Series'));
+using (published and exists (select 1 from public.series_seasons s join public.movies m on m.id=s.series_id where s.id=season_id and m.published and m.category='Web Series' and (m.access_tier='free' or exists (select 1 from public.subscriptions sub where sub.user_id=(select auth.uid()) and sub.status='active' and sub.current_period_end>now()))));
 create policy "Admins manage episodes" on public.series_episodes for all to authenticated
 using (exists (select 1 from public.user_profiles p where p.user_id=(select auth.uid()) and p.role='admin'))
 with check (exists (select 1 from public.user_profiles p where p.user_id=(select auth.uid()) and p.role='admin'));
