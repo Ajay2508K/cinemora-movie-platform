@@ -6,6 +6,8 @@ Responsive movie discovery frontend with a separate authenticated admin panel an
 - `index.html` — public landing page with a Cloudflare Turnstile human-verification gate.
 - `catalog.html` — searchable, filterable live catalogue and signed playback.
 - `admin.html` — Supabase Auth login and admin-only upload/publish management.
+- `series-admin.html` — admin-only seasons and authorized episode link management.
+- `CONTENT-SOURCES.md` — authorized catalog, artwork, and playback source rules.
 - `supabase/schema.sql` — database tables, row-level security, and private media bucket.
 - `supabase/functions/create-upload` — authenticated admin upload URL.
 - `supabase/functions/signed-media` — short-lived playback URL for published titles.
