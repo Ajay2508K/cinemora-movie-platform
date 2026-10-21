@@ -133,9 +133,11 @@ Deno.serve(async (req) => {
       if (!videoId || !/^[A-Za-z0-9_-]{6,20}$/.test(videoId)) return json({ error: "Invalid authorized video source" }, 422);
       playbackUrl = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(videoId)}`;
     } else if (movie.video_source_type === "google_drive") {
-      const match = raw.split("/d/")[1]?.split(/[/?#]/)[0];
-      if (!match || !["drive.google.com", "docs.google.com"].includes(new URL(raw).hostname)) return json({ error: "Invalid authorized video source" }, 422);
-      playbackUrl = `https://drive.google.com/file/d/${encodeURIComponent(match[1])}/preview`;
+      let parsed: URL;
+      try { parsed = new URL(raw); } catch { return json({ error: "Invalid authorized video source" }, 422); }
+      const match = parsed.pathname.split("/d/")[1]?.split("/")[0];
+      if (!match || !["drive.google.com", "docs.google.com"].includes(parsed.hostname)) return json({ error: "Invalid authorized video source" }, 422);
+      playbackUrl = `https://drive.google.com/file/d/${encodeURIComponent(match)}/preview`;
     } else if (movie.video_source_type === "direct") {
       let parsed: URL;
       try { parsed = new URL(raw); } catch { return json({ error: "Invalid authorized video source" }, 422); }
