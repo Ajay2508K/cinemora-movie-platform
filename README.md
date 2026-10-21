@@ -6,6 +6,8 @@ Responsive movie discovery frontend with a separate authenticated admin panel an
 - `index.html` — public landing page with a Cloudflare Turnstile human-verification gate.
 - `catalog.html` — searchable, filterable live catalogue and signed playback.
 - `admin.html` — Supabase Auth login and admin-only upload/publish management.
+- `series-admin.html` — admin-only seasons and authorized episode link management.
+- `CONTENT-SOURCES.md` — authorized catalog, artwork, and playback source rules.
 - `supabase/schema.sql` — database tables, row-level security, and private media bucket.
 - `supabase/functions/create-upload` — authenticated admin upload URL.
 - `supabase/functions/signed-media` — short-lived playback URL for published titles.
@@ -15,7 +17,7 @@ Responsive movie discovery frontend with a separate authenticated admin panel an
 This repository contains the website code, not movie files. Only upload and distribute films/videos you own or are licensed to share. The project is **not live or production-ready until the external services below are configured and deployed**. No load or penetration test has been performed, and no unlimited capacity or zero-attack guarantee is possible.
 
 ## Quick setup
-1. Create a Supabase project and run `supabase/schema.sql` in its SQL Editor.
+1. Create a Supabase project and run `supabase/schema.sql` in its SQL Editor. Then apply `supabase/migrations/20261021090000_series_seasons_episodes.sql` to enable seasons and episodes.
 2. Create an administrator account in Supabase Auth, then run the admin bootstrap SQL at the bottom of `supabase/schema.sql` using your account email.
 3. Copy `supabase-config.js.example` to `supabase-config.js`; fill in the Supabase project URL, browser publishable/anon key, and Cloudflare Turnstile **site key**. Never put a service-role key or Turnstile secret in this file.
 4. Deploy all three Edge Functions: `create-upload`, `signed-media`, and `verify-captcha`.
