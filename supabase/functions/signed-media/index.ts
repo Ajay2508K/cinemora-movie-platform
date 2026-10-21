@@ -126,6 +126,7 @@ Deno.serve(async (req) => {
       let videoId = "";
       try {
         const parsed = new URL(raw);
+        if (!["youtu.be", "youtube.com", "www.youtube.com", "m.youtube.com"].includes(parsed.hostname)) return json({ error: "Invalid authorized video source" }, 422);
         videoId = parsed.hostname === "youtu.be"
           ? parsed.pathname.split("/").filter(Boolean)[0] ?? ""
           : parsed.searchParams.get("v") ?? parsed.pathname.split("/").filter(Boolean).pop() ?? "";
