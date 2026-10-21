@@ -80,7 +80,7 @@ Deno.serve(async (req) => {
   const db = createClient(url, key, { auth: { persistSession: false } });
   const { data: movie, error: movieError } = await db
     .from("movies")
-    .select("video_path,published,access_tier")
+    .select("video_path,published,access_tier,video_source_url,video_source_type")
     .eq("id", body.movieId)
     .maybeSingle();
   if (movieError) return json({ error: "Unable to authorize playback" }, 500);
@@ -119,11 +119,39 @@ Deno.serve(async (req) => {
     return json({ error: "Title not found" }, 404);
   }
 
+  if (movie.video_source_type && movie.video_source_type !== "upload") {
+    const raw = movie.video_source_url ?? "";
+    let playbackUrl = raw;
+    if (movie.video_source_type === "youtube") {
+      let videoId = "";
+      try {
+        const parsed = new URL(raw);
+        videoId = parsed.hostname === "youtu.be"
+          ? parsed.pathname.split("/").filter(Boolean)[0] ?? ""
+          : parsed.searchParams.get("v") ?? parsed.pathname.split("/").filter(Boolean).pop() ?? "";
+      } catch { /* rejected below */ }
+      if (!videoId || !/^[A-Za-z0-9_-]{6,20}$/.test(videoId)) return json({ error: "Invalid authorized video source" }, 422);
+      playbackUrl = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(videoId)}`;
+    } else if (movie.video_source_type === "google_drive") {
+      const match = raw.match(/\\/d\\/([^/?#]+)/);
+      if (!match || !["drive.google.com", "docs.google.com"].includes(new URL(raw).hostname)) return json({ error: "Invalid authorized video source" }, 422);
+      playbackUrl = `https://drive.google.com/file/d/${encodeURIComponent(match[1])}/preview`;
+    } else if (movie.video_source_type === "direct") {
+      let parsed: URL;
+      try { parsed = new URL(raw); } catch { return json({ error: "Invalid authorized video source" }, 422); }
+      if (parsed.protocol !== "https:" || !/\\.(mp4|webm|m3u8)$/i.test(parsed.pathname)) return json({ error: "Invalid authorized video source" }, 422);
+      playbackUrl = raw;
+    } else {
+      return json({ error: "Unsupported playback source" }, 422);
+    }
+    return json({ url: playbackUrl, sourceType: movie.video_source_type, downloadable: false });
+  }
+
   const { data: signed, error: signError } = await db.storage
     .from("cinemora-media")
     .createSignedUrl(movie.video_path, 300, { download: false });
   if (signError || !signed?.signedUrl) {
     return json({ error: "Unable to create playback URL" }, 500);
   }
-  return json({ url: signed.signedUrl, expiresIn: 300 });
+  return json({ url: signed.signedUrl, expiresIn: 300, sourceType: "upload", downloadable: true });
 });
