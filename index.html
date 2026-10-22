@@ -89,20 +89,41 @@ function renderHero(){const hero=document.getElementById("movieHero");if(!featur
 const m=featured[active];hero.style.backgroundImage='linear-gradient(90deg,#08090ef5 0%,#08090edb 38%,#08090e44 100%),linear-gradient(0deg,#08090ec7,transparent 60%),url("/assets/cinemora-spotlight.svg")';document.getElementById("heroCopy").innerHTML='<div class="eyebrow">CINEMORA PREMIERE · '+esc(m.release_year)+'</div><h1 id="hero-title">'+esc(m.title)+'</h1><p class="hero-meta">'+[m.release_year,m.language,m.genre].filter(Boolean).map(esc).join(" · ")+'</p><p>'+esc(m.description||"Discover this recent release on Cinemora.")+'</p><div class="actions"><button class="button" id="heroWatch" type="button">▶ Watch now</button><a class="button ghost" href="/catalog?category='+encodeURIComponent(m.category||"Bollywood")+'">Browse '+esc(m.category||"collection")+'</a></div>';document.getElementById("heroWatch").addEventListener("click",()=>playMovie(m));document.getElementById("heroDots").innerHTML=featured.map((x,i)=>'<button type="button" class="'+(i===active?"active":"")+'" aria-label="Show '+esc(x.title)+'" data-dot="'+i+'"></button>').join("");document.querySelectorAll("[data-dot]").forEach(b=>b.addEventListener("click",()=>{active=Number(b.dataset.dot);renderHero();resetRotate()}))}
 function resetRotate(){clearInterval(rotate);if(featured.length>1)rotate=setInterval(()=>{active=(active+1)%featured.length;renderHero()},6500);else if(!featured.length)rotate=setInterval(()=>{active=(active+1)%art.length;renderHero()},6500)}
 function card(m){const poster=m.poster_url||"";return '<button type="button" class="movie-card" data-movie="'+esc(m.id)+'"><div class="movie-poster">'+(poster?'<img loading="lazy" decoding="async" src="'+esc(poster)+'" alt="Poster for '+esc(m.title)+'" onerror="this.style.display=\'none\'">':'')+'</div><h3>'+esc(m.title)+'</h3><div class="card-meta">'+[m.release_year,m.language].filter(Boolean).map(esc).join(" · ")+'</div></button>'}
-function renderShelves(titles){const host=document.getElementById("movieShelves");const cats=[
-["South Indian · Hindi Dubbed",m=>/south/i.test(m.category||"")&&/hindi/i.test(m.language||"")],
-["Hollywood · Hindi Dubbed",m=>/hollywood/i.test(m.category||"")&&/hindi/i.test(m.language||"")],
-["South Indian Cinema",m=>/south/i.test(m.category||"")&&!/hindi/i.test(m.language||"")],
-["Hollywood",m=>/hollywood/i.test(m.category||"")&&!/hindi/i.test(m.language||"")],
-["Bollywood",m=>/bollywood/i.test(m.category||"")],
-["Web Series",m=>/series/i.test(m.category||"")],
-["Short Films",m=>/short film/i.test(m.category||"")],
-["Documentaries",m=>/documentary/i.test(m.category||"")],
-["Other titles",m=>!/(bollywood|hollywood|south|documentary)/i.test(m.category||"")&&!/series|short film/i.test(m.category||"")]
+function renderShelves(titles){
+const host=document.getElementById("movieShelves");
+const newest=titles.filter(m=>Number(m.release_year)>=2025).sort((a,b)=>(b.created_at||"").localeCompare(a.created_at||"")).slice(0,12);
+const blocks=[];
+function shelf(name,items,category){if(!items.length)return;const href=category?"/catalog?category="+encodeURIComponent(category):"/catalog";blocks.push('<section class="shelf"><div class="section-head"><div><h2>'+esc(name)+'</h2></div><a class="arrow-link" href="'+href+'">View all →</a></div><div class="shelf-track">'+items.map(card).join("")+'</div></section>')}
+shelf("Trending Now",titles.slice(0,12));
+shelf("New &amp; Notable",newest);
+const languageShelves=[
+["Latest Hindi",m=>/^hindi$/i.test(m.language||"")],
+["Latest Hindi Dubbed",m=>/hindi dubbed/i.test(m.language||"")],
+["Latest English",m=>/english/i.test(m.language||"")],
+["Latest Telugu",m=>/telugu/i.test(m.language||"")],
+["Latest Tamil",m=>/tamil/i.test(m.language||"")],
+["Latest Malayalam",m=>/malayalam/i.test(m.language||"")],
+["Latest Kannada",m=>/kannada/i.test(m.language||"")],
+["Latest Bengali",m=>/bengali/i.test(m.language||"")],
+["Latest Marathi",m=>/marathi/i.test(m.language||"")]
 ];
-const blocks=[];const newest=titles.filter(m=>Number(m.release_year)>=2025).slice(0,12);if(newest.length)blocks.push('<section class="shelf"><div class="section-head"><div><h2>New &amp; Notable</h2></div><a class="arrow-link" href="/catalog">View all →</a></div><div class="shelf-track">'+newest.map(card).join("")+'</div></section>')
-for(const [name,test] of cats){const items=titles.filter(test);if(items.length)blocks.push('<section class="shelf"><div class="section-head"><div><h2>'+esc(name)+'</h2><p>'+items.length+' '+(items.length===1?"title":"titles")+'</p></div><a class="arrow-link" href="/catalog?category='+encodeURIComponent(name.includes("South Indian")?"South Indian":name.includes("Hollywood")?"Hollywood":name==="Short Films"?"Short Film":name)+'">View all →</a></div><div class="shelf-track">'+items.map(card).join("")+'</div></section>')}
-host.innerHTML=blocks.join("");host.querySelectorAll("[data-movie]").forEach(b=>b.addEventListener("click",()=>{const m=titles.find(x=>x.id===b.dataset.movie);if(m)playMovie(m)}))}
+for(const [name,test] of languageShelves){const items=titles.filter(test);shelf(name,items)}
+const groups=[
+["Bollywood",m=>/bollywood/i.test(m.category||""),"Bollywood"],
+["Hollywood",m=>/hollywood/i.test(m.category||""),"Hollywood"],
+["South Indian",m=>/south/i.test(m.category||""),"South Indian"],
+["Web Series",m=>/series/i.test(m.category||""),"Web Series"],
+["Short Films",m=>/short film/i.test(m.category||""),"Short Film"],
+["Documentaries",m=>/documentary/i.test(m.category||""),"Documentary"]
+];
+for(const [name,test,category] of groups)shelf(name,titles.filter(test),category);
+const genreNames=["Action","Comedy","Drama","Romance","Thriller","Horror","Animation","Adventure","Sci-Fi","Family","Crime","Documentary"];
+for(const genre of genreNames){const items=titles.filter(m=>String(m.genre||"").toLowerCase().split(/[,/&]/).map(x=>x.trim()).includes(genre.toLowerCase()));if(items.length>=2)shelf(genre+" Picks",items)}
+const series=titles.filter(m=>/series/i.test(m.category||""));
+if(series.length)shelf("TV Series & Specials",series,"Web Series");
+host.innerHTML=blocks.length?blocks.join(""):'<p class="shelf-empty">New titles are being prepared. Check back soon.</p>';
+host.querySelectorAll("[data-movie]").forEach(b=>b.addEventListener("click",()=>{const m=titles.find(x=>x.id===b.dataset.movie);if(m)playMovie(m)}));
+}
 async function loadHome(){try{if(!cfg.SUPABASE_URL||!cfg.SUPABASE_ANON_KEY)return;const db=createClient(cfg.SUPABASE_URL,cfg.SUPABASE_ANON_KEY,{auth:{persistSession:false}});const{data,error}=await db.from("movies").select("id,title,category,release_year,language,genre,description,poster_url,created_at,video_source_url,video_source_type").eq("published",true).order("release_year",{ascending:false}).limit(300);if(error)throw error;const titles=(data||[]).filter(m=>{const c=String(m.category||"").toLowerCase(),y=Number(m.release_year)||0;return c.includes("series")?y>=2010:(y>=1995||y===0)});featured=titles.filter(m=>Number(m.release_year)>=2025&&m.poster_url&&m.video_source_url).slice(0,8);renderHero();resetRotate();renderShelves(titles)}catch(e){console.warn("Cinemora homepage catalogue could not load",e)}}
 document.getElementById("heroPrev").addEventListener("click",()=>{active=(active-1+(featured.length||art.length))%(featured.length||art.length);renderHero();resetRotate()});document.getElementById("heroNext").addEventListener("click",()=>{active=(active+1)%(featured.length||art.length);renderHero();resetRotate()});loadHome();
 </script>
